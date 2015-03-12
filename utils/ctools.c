@@ -3,6 +3,9 @@
 #include <string.h>
 #include "ctools.h"
 
+//helper function for parsing numbers out of cli-args. Takes a string and
+//determines if the entire thing is a number, if so, returns it, else the specified default val
+/*
 long strToLong(char *string, long defaultVal){
     char **end = &string;
     long val = strtol(string, end, 10);
@@ -12,8 +15,48 @@ long strToLong(char *string, long defaultVal){
     }
     return defaultVal;
 }
+*/
 
-//Bit functions
+long strToLong(char *string, long defaultVal){
+    char **end = &string;
+    int len = (int)strlen(string);
+    long val = strtol(string, end, 10);
+
+    if(len > 0 && **end == '\0'){
+        return val;
+    }
+    return defaultVal;
+}
+
+int *genFibb(int upperBound){
+    int maxVals = 10;
+    int *fibs = malloc(sizeof(int) * (maxVals + 1));
+
+    fibs++;
+
+    fibs[0] = 1;
+    fibs[1] = 1;
+
+    int n = 1;
+
+    while(fibs[n] < upperBound){
+        n++;
+
+        if(n >= maxVals){
+            maxVals *= 2;
+            fibs--;
+            fibs = realloc(fibs, sizeof(int) * (maxVals + 1));
+            fibs++;
+        }
+        fibs[n] = fibs[n - 1] + fibs[n - 2];
+    }
+
+    *(fibs - 1) = n;
+    return fibs;
+
+}
+
+//set the nth bit in a long to 0
 unsigned long zero_nth_bit(unsigned long num, int bit){
     unsigned long max = -1;
     unsigned long mask = 1;
@@ -21,13 +64,16 @@ unsigned long zero_nth_bit(unsigned long num, int bit){
     return (~mask) & num;
 }
 
+//returns the value of the nth bit
 int nth_bit(unsigned long num, int bit){
     return num>>bit & 1;
 }
 
-//End Bit Funtions
-
+//takes a digit and number and returns true if digit is in number
 int num_in(int n, long num){
+    if(n > 9)
+        return 1;
+
     if(num < 0){
         num = num * -1;
     }
@@ -61,6 +107,7 @@ int is_palindrome(long n){
     return 0;
 }
 
+//grab the nth digit of a number
 int nth_dig(long num,int n){
     while(n > 0){
         if(num % 10 == num){
@@ -72,6 +119,7 @@ int nth_dig(long num,int n){
     return num % 10;
 }
 
+//should probably be called numberOfdigits, but I wrote this a long time ago so cut me some slack
 int magnitude(long n){
     if(n < 0){
         return -1;
@@ -87,15 +135,16 @@ int magnitude(long n){
 
 //generates list of primes up to, but not including, max val
 // and returns a pointer to that list
-long *gen_primes(long max){
+long *gen_primes(long upperBound){
     long found = 0; //tracks number of primes found
-    unsigned long *test_field = malloc(max);
-//unsigned long *test_field = malloc(max/sizeof(long) + 1); //list of possible nums to be prime
+    upperBound += upperBound % sizeof(long);
+    long max = upperBound / 8; //number of bits in a byte
+    unsigned long *test_field = malloc(max); //list of possible nums to be prime
 
     unsigned long i,j; //looping vars
     i = 0;
     j = -1;
-    for(i;i<max/sizeof(long);i++){
+    for(i;i< max / 8;i++){
         test_field[i] = -1;
     }
 
@@ -129,6 +178,7 @@ long *gen_primes(long max){
             j++;
         }
     }
+
     primes++;
     return primes;
 }

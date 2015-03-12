@@ -1,5 +1,8 @@
-long *gen_primes(long);
 long strToLong(char *string, long);
+
+int *genFibb(int);
+
+long *gen_primes(long);
 int magnitude(long);
 int nth_dig(long,int);
 int is_palindrome(long);
