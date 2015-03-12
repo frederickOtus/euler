@@ -1,5 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "ctools.h"
+
+long strToLong(char *string, long defaultVal){
+    char **end = &string;
+    long val = strtol(string, end, 10);
+
+    if((int)strlen(string) > 0 && **end == '\0'){
+        return val;
+    }
+    return defaultVal;
+}
 
 //Bit functions
 unsigned long zero_nth_bit(unsigned long num, int bit){
