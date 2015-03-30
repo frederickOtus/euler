@@ -1,3 +1,8 @@
+#include <stdbool.h>
+
+int ind_of_next(char *text, char targ);
+void str_partial_cpy(char *dest, char *src, int numchars);
+
 long strToLong(char *string, long);
 
 int *genFibb(int);

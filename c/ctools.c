@@ -3,6 +3,28 @@
 #include <string.h>
 #include "ctools.h"
 
+//string funcs
+void str_partial_cpy(char *dest, char *src, int numchars){
+    int i = 0;
+    for(i; i < numchars; i++){
+        if(src[i] == '\0')
+            return;
+        dest[i] = src[i];
+    }
+    dest[i] = '\0';
+}
+
+int ind_of_next(char *text, char targ){
+    int i = 0;
+    while(true){
+        if(text[i] == targ)
+            return i;
+        else if(text[i] == '\0')
+            return -1;
+        i++;
+    }
+}
+
 //helper function for parsing numbers out of cli-args. Takes a string and
 //determines if the entire thing is a number, if so, returns it, else the specified default val
 long strToLong(char *string, long defaultVal){
