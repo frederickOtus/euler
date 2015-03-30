@@ -5,24 +5,11 @@
 
 //helper function for parsing numbers out of cli-args. Takes a string and
 //determines if the entire thing is a number, if so, returns it, else the specified default val
-/*
 long strToLong(char *string, long defaultVal){
     char **end = &string;
     long val = strtol(string, end, 10);
 
     if((int)strlen(string) > 0 && **end == '\0'){
-        return val;
-    }
-    return defaultVal;
-}
-*/
-
-long strToLong(char *string, long defaultVal){
-    char **end = &string;
-    int len = (int)strlen(string);
-    long val = strtol(string, end, 10);
-
-    if(len > 0 && **end == '\0'){
         return val;
     }
     return defaultVal;
@@ -41,13 +28,6 @@ int *genFibb(int upperBound){
 
     while(fibs[n] < upperBound){
         n++;
-
-        if(n >= maxVals){
-            maxVals *= 2;
-            fibs--;
-            fibs = realloc(fibs, sizeof(int) * (maxVals + 1));
-            fibs++;
-        }
         fibs[n] = fibs[n - 1] + fibs[n - 2];
     }
 
@@ -144,8 +124,8 @@ long *gen_primes(long upperBound){
     unsigned long i,j; //looping vars
     i = 0;
     j = -1;
-    for(i;i< max / 8;i++){
-        test_field[i] = -1;
+    for(i;i< upperBound / 8;i++){
+        test_field[i] = 1;
     }
 
     test_field[0] = zero_nth_bit(test_field[0],0); //one isn't prime, so set it to zero, same with zero
