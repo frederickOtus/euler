@@ -1,5 +1,3 @@
-import Data.List 
-
 solve = length sols
     where sols = foldl (++) [] $ takeWhile ((>0) . length) $ map nDigs [1..]
 
