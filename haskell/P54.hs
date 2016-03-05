@@ -4,15 +4,13 @@ import Data.Char
 type Card = (Int, Char) --first int is val, second is suit
 
 sameSuit ((c,s):hand) = all (\(_,s')-> s' == s) hand
-isSeq a@((c,s):_) = and $ zipWith (==) [c..] (map fst a)
+isSeq a@((c,s):_) = and $ zipWith (==) [c,c-1 ..] (map fst a)
 
 handMax :: [Card] -> Int
 handMax hand = maximum (map fst hand)
 
 rties :: [Int] -> [Int] -> Ordering
 rties [] [] = EQ
-rties [] _ = EQ
-rties _ [] = EQ
 rties (a:as) (b:bs) 
     | a > b = GT
     | b < a = LT
@@ -21,7 +19,7 @@ rties [a] [b] = a `compare` b
 
 leftWins :: ([Card],[Card]) -> Bool
 leftWins (h1,h2)
-    | r1 > r1 = True
+    | r1 > r2 = True
     | r1 == r2 && tie == GT = True
     | r1 == r2 && tie == EQ && handRank h1 h2 = True
     | otherwise = False
@@ -29,7 +27,7 @@ leftWins (h1,h2)
           (r2,t2) = rank h2    
           tie = rties t1 t2
 
-handRank [] [] = False
+handRank [] [] = error "This shouldn't happen"
 handRank ((v1,_):h1) ((v2,_):h2)
     | v1 > v2 = True
     | v1 < v2 = False
@@ -60,9 +58,9 @@ rank hand@((c,s):h)
 rankMatches :: [(Int, Int)] -> (Int, [Int])
 rankMatches ((4, h):_) = (7, [h]) --4 of a kind
 rankMatches [(3, h1),(2,h2)] = (6, [h1,h2]) --full house
-rankMatches ((3, h1):_) = (3, [h1]) --two pair
+rankMatches ((3, h1):_) = (3, [h1]) --three of a kind
 rankMatches ((2, h1):(2,h2):_) = (2, [max h1 h2, min h1 h2]) --two pair
-rankMatches ((2, h):_) = (1, [h]) --two pair
+rankMatches ((2, h):_) = (1, [h]) --pair
 
 smatches :: [Card] -> [(Int, Int)]
 smatches hand = sortBy (flip cmp) ms
@@ -105,6 +103,20 @@ ts = [t1,t2,t3,t4,t5]
 test = solve ts
 
 solve = length . filter leftWins . map (cards2Hands . parseHand)
+
+
+{-
+printHand :: String -> String
+printHand cds = unlines msg
+    where (h1,h2) = cards2Hands $ parseHand cds
+          r1 = rank h1
+          r2 = rank h2
+          msg = [show h1 ++ show r1, show h2 ++ show r2, show $ leftWins (h1,h2)]
+-}
+--printHands = unlines . map printHand
+
+--main = fmap (printHands . lines) fstring >>= putStrLn 
+--    where fstring = readFile "thands.txt"
 
 main =  fmap (show . solve . lines) fstring >>= putStrLn
     where fstring = readFile "p054_poker.txt"
